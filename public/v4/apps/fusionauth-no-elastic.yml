@@ -23,6 +23,7 @@ services:
             DATABASE_PASSWORD: $$cap_db_pass
             FUSIONAUTH_MEMORY: $$cap_fusion_memory
             FUSIONAUTH_URL: http://srv-captain--$$cap_appname-fusionauth:9011
+            SEARCH_ENGINE_TYPE: database
         restart: unless-stopped
         volumes:
             - $$cap_appname-fusionauth-config:/usr/local/fusionauth/config
