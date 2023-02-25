@@ -1,0 +1,53 @@
+captainVersion: 4
+services:
+    $$cap_appname-db:
+        image: postgres:$$cap_postgres_version
+        environment:
+            POSTGRES_USER: $$cap_db_user
+            POSTGRES_PASSWORD: $$cap_db_pass
+            POSTGRES_DB: logto
+        restart: unless-stopped
+        volumes:
+            - $$cap_appname-db-data:/var/lib/postgresql/data
+        caproverExtra:
+            notExposeAsWebApp: 'true'
+    $$cap_appname-fusionauth:
+        image: ghcr.io/logto-io/logto:$$cap_logto_version
+        entrypoint: ["sh", "-c", "npm run cli db seed -- --swe && npm start"]
+        depends_on:
+            - $$cap_appname-db
+        environment:
+            TRUST_PROXY_HEADER: 1
+            DB_URL: postgres://$$cap_db_user:$$cap_db_pass@srv-captain--$$cap_appname-db:5432/logto
+        restart: unless-stopped
+        caproverExtra:
+            containerHttpPort: 3001
+caproverOneClickApp:
+    variables:
+        - id: $$cap_db_user
+          label: Database user
+          defaultValue: logto1db1user
+          validRegex: /^([a-zA-Z0-9])+$/
+        - id: $$cap_db_pass
+          label: Database password
+          defaultValue: logto1db1pass
+          description: ''
+          validRegex: /.{1,}/
+        - id: $$cap_logto_version
+          label: logto Version
+          defaultValue: latest
+          description: 'See tags at: https://github.com/logto-io/logto'
+          validRegex: /^([^\s^\/])+$/
+        - id: $$cap_postgres_version
+          label: Postgres Version
+          defaultValue: 'latest'
+          description: ''
+          validRegex: /^([^\s^\/])+$/
+    instructions:
+        start: >-
+            Logto helps you build sign-in, auth, and user identity.
+        end: Logto is deployed and available as srv-captain--$$cap_appname-fusionauth:3001 to other apps
+    displayName: Logto with postgres
+    isOfficial: false
+    description: Logto helps you build sign-in, auth, and user identity.
+    documentation: 'Adapted from: https://github.com/logto-io/logto'
