@@ -11,7 +11,7 @@ services:
             - $$cap_appname-db-data:/var/lib/postgresql/data
         caproverExtra:
             notExposeAsWebApp: 'true'
-    $$cap_appname-fusionauth:
+    $$cap_appname-logto:
         image: ghcr.io/logto-io/logto:$$cap_logto_version
         entrypoint: ["sh", "-c", "npm run cli db seed -- --swe && npm start"]
         depends_on:
@@ -46,7 +46,7 @@ caproverOneClickApp:
     instructions:
         start: >-
             Logto helps you build sign-in, auth, and user identity.
-        end: Logto is deployed and available as srv-captain--$$cap_appname-fusionauth:3001 to other apps
+        end: Logto is deployed and available as srv-captain--$$cap_appname-logto:3001 to other apps
     displayName: Logto with postgres
     isOfficial: false
     description: Logto helps you build sign-in, auth, and user identity.
