@@ -13,12 +13,14 @@ services:
             notExposeAsWebApp: 'true'
     $$cap_appname-logto:
         image: ghcr.io/logto-io/logto:$$cap_logto_version
-        entrypoint: ["sh", "-c", "npm run cli db seed -- --swe && npm start"]
+        entrypoint: ["sh", "-c", "npx @logto/cli db seed -- --swe && npm start"]
         depends_on:
             - $$cap_appname-db
         environment:
             TRUST_PROXY_HEADER: 1
             DB_URL: postgres://$$cap_db_user:$$cap_db_pass@srv-captain--$$cap_appname-db:5432/logto
+            ENDPOINT: ""
+            ADMIN_ENDPOINT: ""
         restart: unless-stopped
         caproverExtra:
             containerHttpPort: 3001
@@ -40,7 +42,7 @@ caproverOneClickApp:
           validRegex: /^([^\s^\/])+$/
         - id: $$cap_postgres_version
           label: Postgres Version
-          defaultValue: 'latest'
+          defaultValue: '14-alpine'
           description: ''
           validRegex: /^([^\s^\/])+$/
     instructions:
